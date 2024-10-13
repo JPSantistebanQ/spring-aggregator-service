@@ -24,7 +24,17 @@ class CustomerInformationTest extends AbstractIntegrationTest {
                 .jsonPath("$.name").isEqualTo("Sam")
                 .jsonPath("$.balance").isEqualTo(10_000)
                 .jsonPath("$.holdings").isNotEmpty();
+    }
 
+    @Test
+    void customerNotFound() {
+        // * given
+        mockCustomerInformation("customer-service/customer-information-404.json", 404);
+
+        // * then
+        getCustomerInformation(HttpStatus.NOT_FOUND)
+                .jsonPath("$.detail").isEqualTo("Customer [id: 1] not found")
+                .jsonPath("$.title").isNotEmpty();
     }
 
     private void mockCustomerInformation(String path, int responseCode) {
